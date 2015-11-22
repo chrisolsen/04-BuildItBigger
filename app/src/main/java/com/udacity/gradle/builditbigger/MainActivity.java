@@ -1,17 +1,18 @@
 package com.udacity.gradle.builditbigger;
 
+import android.content.Intent;
 import android.os.Bundle;
-import android.support.v7.app.ActionBarActivity;
+import android.support.v7.app.AppCompatActivity;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
-import android.widget.Toast;
 
-import org.chrisolsen.Joke;
-import org.chrisolsen.JokeProvider;
+import org.chrisolsen.common.Joke;
+import org.chrisolsen.common.JokeProvider;
+import org.chrisolsen.android.JokeActivity;
 
 
-public class MainActivity extends ActionBarActivity {
+public class MainActivity extends AppCompatActivity {
 
     JokeProvider mJokeProvider;
 
@@ -48,7 +49,9 @@ public class MainActivity extends ActionBarActivity {
 
     public void tellJoke(View view){
         Joke joke = mJokeProvider.fetch();
-        Toast.makeText(this, joke.toString(), Toast.LENGTH_SHORT).show();
+        Intent intent = new Intent(this, JokeActivity.class);
+        intent.putExtra(JokeActivity.JOKE_PARCELABLE_EXTRA_KEY, joke);
+        startActivity(intent);
     }
 
 
