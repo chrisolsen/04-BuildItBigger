@@ -3,12 +3,13 @@ package org.chrisolsen.common;
 import android.os.Parcel;
 import android.os.Parcelable;
 
-/**
- * Created by chris on 11/22/15.
- */
 public class Joke implements Parcelable {
 
     public String text;
+
+    public Joke(String content) {
+        this.text = content;
+    }
 
     @Override
     public String toString() {
@@ -23,9 +24,6 @@ public class Joke implements Parcelable {
     @Override
     public void writeToParcel(Parcel dest, int flags) {
         dest.writeString(this.text);
-    }
-
-    public Joke() {
     }
 
     protected Joke(Parcel in) {
