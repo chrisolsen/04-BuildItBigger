@@ -3,11 +3,11 @@ package com.udacity.gradle.builditbigger;
 import android.content.Intent;
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
-import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.Button;
+import android.widget.ProgressBar;
 
 import com.google.android.gms.ads.AdListener;
 import com.google.android.gms.ads.AdRequest;
@@ -23,10 +23,9 @@ import org.chrisolsen.common.Joke;
  */
 public class MainActivityFragment extends Fragment implements JokeTask.JokeTaskListener {
 
-    private static final String TAG = "MainActivityFrag:Free";
-
     InterstitialAd mInterstitialAd;
     AdView mAdView;
+    ProgressBar mProgressBar;
 
     public MainActivityFragment() { }
 
@@ -36,14 +35,19 @@ public class MainActivityFragment extends Fragment implements JokeTask.JokeTaskL
 
         View root = inflater.inflate(R.layout.fragment_main, container, false);
         final JokeTask.JokeTaskListener jokeTaskListener = this;
+        mProgressBar = (ProgressBar) root.findViewById(R.id.spinner);
 
         bindTellJokeButton(root);
         initEmbeddedAd(root);
         initInterstitialAd(root, new AdListener() {
             @Override
             public void onAdClosed() {
-                Log.d(TAG, "onAdClosed");
                 new JokeTask(jokeTaskListener).execute();
+            }
+
+            @Override
+            public void onAdOpened() {
+                mProgressBar.setVisibility(View.GONE);
             }
         });
 
@@ -57,6 +61,8 @@ public class MainActivityFragment extends Fragment implements JokeTask.JokeTaskL
         btn.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
+                mProgressBar.setVisibility(View.VISIBLE);
+
                 if (mInterstitialAd.isLoaded()) {
                     mInterstitialAd.show();
                 } else {
@@ -98,5 +104,11 @@ public class MainActivityFragment extends Fragment implements JokeTask.JokeTaskL
         Intent intent = new Intent(getContext(), JokeActivity.class);
         intent.putExtra(JokeActivity.JOKE_PARCELABLE_EXTRA_KEY, joke);
         startActivity(intent);
+    }
+
+    @Override
+    public void onStop() {
+        super.onStop();
+        mProgressBar.setVisibility(View.GONE);
     }
 }
