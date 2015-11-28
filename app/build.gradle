@@ -15,13 +15,18 @@ android {
     }
     buildTypes {
         release {
-            minifyEnabled false
+            minifyEnabled true
             proguardFiles getDefaultProguardFile('proguard-android.txt'), 'proguard-rules.pro'
         }
     }
 
     dexOptions {
         javaMaxHeapSize "4g"
+    }
+
+    productFlavors {
+        free { }
+        paid { }
     }
 }
 
