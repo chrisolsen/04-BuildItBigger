@@ -1,5 +1,6 @@
-package org.chrisolsen.common;
+package com.udacity.gradle.builditbigger;
 
+import android.os.AsyncTask;
 import android.util.Log;
 
 import com.google.api.client.extensions.android.http.AndroidHttp;
@@ -8,15 +9,26 @@ import com.google.api.client.googleapis.services.AbstractGoogleClientRequest;
 import com.google.api.client.googleapis.services.GoogleClientRequestInitializer;
 
 import org.chrisolsen.backend.myApi.MyApi;
+import org.chrisolsen.common.Joke;
 
 import java.io.IOException;
 
-public class JokeProvider {
+public class JokeTask extends AsyncTask<Void, Void, Joke> {
 
-    private static final String TAG = "JokeProvider";
+    public interface JokeTaskListener {
+        void onJokeReceived(Joke joke);
+    }
+
+    private static final String TAG = "JokeTask";
+    private JokeTaskListener mJokeListener;
     private MyApi mApiService;
 
-    public Joke fetch() {
+    public JokeTask(JokeTaskListener listener) {
+        mJokeListener = listener;
+    }
+
+    @Override
+    protected Joke doInBackground(Void... voids) {
         if(mApiService == null) {  // Only do this once
             MyApi.Builder builder = new MyApi.Builder(AndroidHttp.newCompatibleTransport(),
                     new AndroidJsonFactory(), null)
@@ -35,14 +47,17 @@ public class JokeProvider {
 
         try {
             String text = mApiService.getJoke().execute().getData();
+            Log.d(TAG, "doInBackground: " + text);
             return new Joke(text);
         } catch (IOException e) {
             Log.d(TAG, "fetch: " + e.getLocalizedMessage());
             return null;
         }
     }
+
+    @Override
+    protected void onPostExecute(Joke joke) {
+        Log.d(TAG, "onPostExecute: JOKE: " + joke);
+        mJokeListener.onJokeReceived(joke);
+    }
 }
-
-
-
-

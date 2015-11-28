@@ -1,8 +1,6 @@
 package com.udacity.gradle.builditbigger;
 
-import android.content.Context;
 import android.content.Intent;
-import android.os.AsyncTask;
 import android.os.Bundle;
 import android.support.v7.app.AppCompatActivity;
 import android.view.Menu;
@@ -14,8 +12,9 @@ import org.chrisolsen.common.Joke;
 import org.chrisolsen.common.JokeProvider;
 
 
-public class MainActivity extends AppCompatActivity {
+public class MainActivity extends AppCompatActivity implements JokeTask.JokeTaskListener {
 
+    private static final String TAG = "app:MainActivity";
     JokeProvider mJokeProvider;
 
     @Override
@@ -49,32 +48,14 @@ public class MainActivity extends AppCompatActivity {
         return super.onOptionsItemSelected(item);
     }
 
-    public void tellJoke(View view){
+    public void tellJoke(View view) {
         new JokeTask(this).execute();
     }
 
-    class JokeTask extends AsyncTask<Void, Void, Joke> {
-
-        private Context mContext;
-
-        public JokeTask(Context c) {
-            mContext = c;
-        }
-
-        @Override
-        protected Joke doInBackground(Void... voids) {
-            return mJokeProvider.fetch();
-        }
-
-        @Override
-        protected void onPostExecute(Joke joke) {
-            Intent intent = new Intent(mContext, JokeActivity.class);
-            intent.putExtra(JokeActivity.JOKE_PARCELABLE_EXTRA_KEY, joke);
-            startActivity(intent);
-        }
+    @Override
+    public void onJokeReceived(Joke joke) {
+        Intent intent = new Intent(this, JokeActivity.class);
+        intent.putExtra(JokeActivity.JOKE_PARCELABLE_EXTRA_KEY, joke);
+        startActivity(intent);
     }
-
-
-
-
 }

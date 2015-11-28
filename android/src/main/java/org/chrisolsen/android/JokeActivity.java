@@ -29,6 +29,11 @@ public class JokeActivity extends AppCompatActivity {
         Log.d(TAG, "onCreate: getParcelableExtra");
         Joke joke = intent.getParcelableExtra(JOKE_PARCELABLE_EXTRA_KEY);
 
+        if (joke == null) {
+            Toast.makeText(this, "No joke!", Toast.LENGTH_SHORT).show();
+            return;
+        }
+
         TextView jokeText = (TextView)findViewById(R.id.joke);
         jokeText.setText(joke.toString());
     }

@@ -13,7 +13,7 @@ public class Joke implements Parcelable {
 
     @Override
     public String toString() {
-        return "this si the bad joke";
+        return this.text;
     }
 
     @Override
