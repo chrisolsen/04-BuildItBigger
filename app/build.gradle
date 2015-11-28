@@ -1,5 +1,13 @@
 apply plugin: 'com.android.application'
 
+task _runTests(dependsOn: [':backend:appengineRun',
+                          ':app:connectedAndroidTest',
+                          ':backend:appengineStop']) {
+    doLast {
+        println 'tests completed!'
+    }
+}
+
 android {
     compileSdkVersion 23
     buildToolsVersion "22.0.1"
